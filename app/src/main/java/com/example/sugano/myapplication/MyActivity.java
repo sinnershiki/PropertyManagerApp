@@ -3,12 +3,10 @@ package com.example.sugano.myapplication;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.res.Resources;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -24,6 +22,7 @@ import java.util.Calendar;
 
 public class MyActivity extends Activity implements OnClickListener{
     Button btn1;
+    Button btn2;
     TextView tv;
     TextView tvCal;
     String textDialog;
@@ -35,10 +34,11 @@ public class MyActivity extends Activity implements OnClickListener{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my);
-        mydb = new DBAdapter(getApplicationContext()).open().db;
 
         btn1 = (Button)findViewById(R.id.btn1);
+        btn2 = (Button)findViewById(R.id.btn2);
         btn1.setOnClickListener(this);
+        btn2.setOnClickListener(this);
         tv = (TextView)findViewById(R.id.tvTest);
         Resources res = getResources();
         for(int i=0;i<=41;i++){
@@ -100,35 +100,34 @@ public class MyActivity extends Activity implements OnClickListener{
     }
 
     public void onClick(View v) {
-        if (v==btn1) {
-            //Intent intent = new Intent(this, ListPageActivity.class);
-            //startActivityForResult(intent, 0);
-            /*
+        if (v==btn1){
+            mydb = new DBAdapter(getApplicationContext()).open();
+
             ContentValues values = new ContentValues();
             //_id, person, property, period_date, from is_lending
-            values.put("person", "user");
-            values.put("property", "game");
-            values.put("period_date", "2014-10-10");
+            values.put("person", "test");
+            values.put("property", "test");
+            values.put("period_date", "2014-11-10");
+            values.put("from_date", "2014-9-4");
+            values.put("is_lending", "-1");
+            //Insert発行
+            mydb.insert(table_name, null, values);
+
+            values = new ContentValues();
+            //_id, person, property, period_date, from is_lending
+            values.put("person", "test");
+            values.put("property", "test");
+            values.put("period_date", "2014-11-10");
             values.put("from_date", "2014-9-4");
             values.put("is_lending", "1");
             //Insert発行
             mydb.insert(table_name, null, values);
-             */
 
-
-            Cursor cursor = mydb.rawQuery("select * from " + table_name + ";",null);
-            //TextViewに表示
-            StringBuilder str = new StringBuilder();
-            while (cursor.moveToNext()) {
-                str.append(cursor.getInt(0));
-                str.append("," + cursor.getString(1));
-                str.append("," + cursor.getString(2));
-                str.append("," + cursor.getString(3));
-                str.append("," + cursor.getString(4));
-                str.append("," + cursor.getInt(5));
-                str.append("\n");
-            }
-            tv.setText(str);
+            mydb.close();
+        }
+        else if (v==btn2) {
+            Intent intent = new Intent(this, ListPageActivity.class);
+            startActivityForResult(intent, 0);
         }else{
             String tmp="";
             Resources res = getResources();

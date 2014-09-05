@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
  * Created by Sugano on 2014/09/04.
  */
 public class DBAdapter {
-    final static int dbVer = 1;
+    final static int dbVer = 2;
     final static String dbName = "property_manager.db";
     String table_name = "property_list_table";
     protected final Context context;
@@ -19,9 +19,9 @@ public class DBAdapter {
         dbHelper = new DatabaseHelper(this.context);
     }
 
-    public DBAdapter open() {
+    public SQLiteDatabase open() {
         db = dbHelper.getWritableDatabase();
-        return this;
+        return db;
     }
 
 
@@ -39,7 +39,7 @@ public class DBAdapter {
             db.execSQL(
                     //_id, person, property, period_date, from_date is_lending
                     "create table "+table_name+" ( " +
-                            "_id integer primary key autoincrement, " +
+                            "id integer primary key autoincrement, " +
                             "person text not null," +
                             "property text not null," +
                             "period_date text not null," +
@@ -54,7 +54,7 @@ public class DBAdapter {
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
             // テーブルの破棄と再作成
-            db.execSQL("drop table + "+table_name+";");
+            db.execSQL("drop table "+table_name+";");
             onCreate(db);
         }
     }

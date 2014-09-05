@@ -20,6 +20,10 @@
             android:name=".ListPageActivity"
             android:label="@string/title_activity_list_page" >
         </activity>
+        <activity
+            android:name=".EnterDataActivity"
+            android:label="@string/title_activity_enter_data" >
+        </activity>
     </application>
 
 </manifest>
