@@ -8,28 +8,28 @@
         android:id="@+id/person"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="20sp"
+        android:textSize="17sp"
         android:layout_weight="1"
         />
     <TextView
         android:id="@+id/property"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="20sp"
+        android:textSize="17sp"
         android:layout_weight="1"
         />
     <TextView
         android:id="@+id/from_date"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="20sp"
+        android:textSize="17sp"
         android:layout_weight="1"
         />
     <TextView
         android:id="@+id/period_date"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="20sp"
+        android:textSize="17sp"
         android:layout_weight="1"
         />
 </LinearLayout>

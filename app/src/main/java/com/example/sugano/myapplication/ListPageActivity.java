@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -13,26 +14,33 @@ import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
-import android.widget.TextView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class ListPageActivity extends Activity implements OnClickListener, OnItemClickListener {
+public class ListPageActivity extends Activity implements OnClickListener, OnItemClickListener, RadioGroup.OnCheckedChangeListener {
     int deleteId;
     CustomData item;
-    TextView tv;
+    //TextView tv;
     static SQLiteDatabase mydb;
     String table_name = "property_list_table";
     ListView lv;
+    RadioGroup rg;
+    RadioButton rb;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_page);
-        tv = (TextView)findViewById(R.id.listtextview);
+        //tv = (TextView)findViewById(R.id.listtextview);
         lv = (ListView)findViewById(R.id.listview1);
-        drawList();
+        rg = (RadioGroup) findViewById(R.id.lendOrBorrow);
+        rb =(RadioButton) findViewById(rg.getCheckedRadioButtonId());
+        rg.setOnCheckedChangeListener(this);
+        drawList(0);
     }
 
 
@@ -55,9 +63,15 @@ public class ListPageActivity extends Activity implements OnClickListener, OnIte
         return super.onOptionsItemSelected(item);
     }
 
-    public void drawList(){
+    public void drawList(int isLending){
         mydb = new DBAdapter(getApplicationContext()).open();
-        Cursor cursor = mydb.rawQuery("select * from " + table_name + ";",null);
+        Cursor cursor;
+        if (isLending == 1)
+            cursor = mydb.rawQuery("select * from " + table_name + " where is_lending = 1;",null);
+        else if (isLending == -1)
+            cursor = mydb.rawQuery("select * from " + table_name + " where is_lending = -1;",null);
+        else
+            cursor = mydb.rawQuery("select * from " + table_name + " ;",null);
         List<CustomData> objects = new ArrayList<CustomData>();
         while (cursor.moveToNext()) {
             item = new CustomData();
@@ -75,6 +89,20 @@ public class ListPageActivity extends Activity implements OnClickListener, OnIte
         lv.setOnItemClickListener(this);
         mydb.close();
     }
+
+    public void onCheckedChanged(RadioGroup group, int checkedId) {
+        rb = (RadioButton) findViewById(rg.getCheckedRadioButtonId());
+        Toast.makeText(this, this.getResources().getResourceEntryName(rb.getId()), Toast.LENGTH_SHORT).show();
+        if (this.getResources().getResourceEntryName(rb.getId()).toString().equals("lend")) {
+            drawList(1);
+        }else if (this.getResources().getResourceEntryName(rb.getId()).toString().equals("borrow")) {
+            drawList(-1);
+        }else {
+            drawList(0);
+        }
+        Log.d("ListPageActivity", "test");
+    }
+
 
     public void onClick(View v) {
 
@@ -94,7 +122,7 @@ public class ListPageActivity extends Activity implements OnClickListener, OnIte
                                     mydb = new DBAdapter(getApplicationContext()).open();
                                     mydb.delete(table_name, "id ="+ deleteId, null);
                                     mydb.close();
-                                    drawList();
+                                    drawList(0);
                                 }
                             })
                     .setNegativeButton(

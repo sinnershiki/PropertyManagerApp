@@ -51,11 +51,13 @@ public class CustomAdapter extends ArrayAdapter<CustomData> {
         tvPeriodDate.setText(item.getPeriodDate());
 
         //背景色設定
+
         if(item.getIsLending() == 1){
-            convertView.setBackgroundColor(Color.BLUE);
+            convertView.setBackgroundColor(Color.rgb(231, 232,226));
         }else{
-            convertView.setBackgroundColor(Color.RED);
+            convertView.setBackgroundColor(Color.rgb(255,255,255));
         }
+
 
 
         return convertView;

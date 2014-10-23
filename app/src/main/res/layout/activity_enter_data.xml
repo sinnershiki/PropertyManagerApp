@@ -1,4 +1,4 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -9,8 +9,81 @@
     tools:context="com.example.sugano.myapplication.EnterDataActivity">
 
     <TextView
-        android:text="@string/hello_world"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="登録画面"
+        android:gravity="center"
+        android:textSize="20dp"
+        />
+    <TableRow>
+        <TextView
+            android:id="@+id/propertyView"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="もの"
+         />
 
-</RelativeLayout>
+        <EditText
+            android:id="@+id/propertyEdit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:layout_weight="1"
+        />
+    </TableRow>
+
+    <TableRow>
+        <TextView
+            android:id="@+id/personView"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="だれから？"
+            />
+
+        <EditText
+            android:id="@+id/personEdit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:layout_weight="1"
+            />
+    </TableRow>
+    <TableRow>
+        <TextView
+            android:id="@+id/periodView"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="いつまで？"
+            />
+        <DatePicker
+            android:id="@+id/datePicker1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:calendarViewShown="false"
+            />
+    </TableRow>
+    <RadioGroup android:id="@+id/lendOrBorrow"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal">
+        <RadioButton android:id="@+id/lend"
+            android:checked="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="貸" />
+        <RadioButton android:id="@+id/borrow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="借" />
+    </RadioGroup>
+    <Button android:id="@+id/enterbutton"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="登録" />
+
+
+</TableLayout>
