@@ -1,35 +1,36 @@
 package com.example.sugano.myapplication;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.ContentValues;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.view.LayoutInflater;
+import android.view.GestureDetector;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
-
+import android.view.GestureDetector;
+import android.view.GestureDetector.SimpleOnGestureListener;
+import android.view.MotionEvent;
 import java.util.Calendar;
 
 
 public class MyActivity extends Activity implements OnClickListener{
     Button btn1;
     Button btn2;
-    TextView tv;
+    Button leftBtn;
+    Button rightBtn;
     TextView tvCal;
-    String textDialog;
+    TextView td;
     final static int dbVer = 1;
     final static String dbName = "property_manager.db";
     String table_name = "property_list_table";
     static SQLiteDatabase mydb;
+    Calendar cal;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,9 +38,15 @@ public class MyActivity extends Activity implements OnClickListener{
 
         btn1 = (Button)findViewById(R.id.btn1);
         btn2 = (Button)findViewById(R.id.btn2);
+        leftBtn= (Button)findViewById(R.id.left);
+        rightBtn= (Button)findViewById(R.id.right);
         btn1.setOnClickListener(this);
         btn2.setOnClickListener(this);
-        tv = (TextView)findViewById(R.id.tvTest);
+        leftBtn.setOnClickListener(this);
+        rightBtn.setOnClickListener(this);
+        td = (TextView)findViewById(R.id.date);
+        cal = Calendar.getInstance();
+        td.setText(cal.get(Calendar.YEAR)+"年"+(cal.get(Calendar.MONTH)+1)+"月");
         Resources res = getResources();
         for(int i=0;i<=41;i++){
             String resViewName = "tv" + i;
@@ -47,8 +54,9 @@ public class MyActivity extends Activity implements OnClickListener{
             tvCal = (TextView)findViewById(viewId);
             tvCal.setOnClickListener(this);
         }
-        writeCalendarDate();
+        writeCalendarDate(cal);
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -68,24 +76,23 @@ public class MyActivity extends Activity implements OnClickListener{
         return super.onOptionsItemSelected(item);
     }
 
-    public void writeCalendarDate(){
+    public void clearCalendarDate(){
+        Resources res = getResources();
+        for(int i=0;i<42;i++){
+            String resViewName = "tv" + i;
+            int viewId = res.getIdentifier(resViewName, "id", getPackageName());
+            tvCal = (TextView)findViewById(viewId);
+            tvCal.setText("");
+        }
+    }
+
+    public void writeCalendarDate(Calendar cal){
+        clearCalendarDate();
         String text = "";
-        Calendar cal = Calendar.getInstance();
-        int yr =  cal.get(Calendar.YEAR);
-        int month = cal.get(Calendar.MONTH);
-        cal.set(yr,month,1);
+        cal.set(cal.get(Calendar.YEAR),cal.get(Calendar.MONTH),1);
         StringBuffer dow = new StringBuffer();
 
         int i = 0;
-        switch (cal.get(Calendar.DAY_OF_WEEK)) {  //(8)現在の曜日を取得
-            case Calendar.SUNDAY: dow.append("日曜日"); break;
-            case Calendar.MONDAY: dow.append("月曜日"); break;
-            case Calendar.TUESDAY: dow.append("火曜日"); break;
-            case Calendar.WEDNESDAY: dow.append("水曜日"); break;
-            case Calendar.THURSDAY: dow.append("木曜日"); break;
-            case Calendar.FRIDAY: dow.append("金曜日"); break;
-            case Calendar.SATURDAY: dow.append("土曜日"); break;
-        }
         i = cal.get(Calendar.DAY_OF_WEEK);
         Resources res = getResources();
         for(int j=1;j<=cal.getActualMaximum(Calendar.DATE);i++,j++){
@@ -95,35 +102,35 @@ public class MyActivity extends Activity implements OnClickListener{
             tvCal = (TextView)findViewById(viewId);
             tvCal.setText(""+j);
         }
-        text = dow.toString();
-        tv.setText(text);
     }
 
     public void onClick(View v) {
-        if (v==btn1){
-            mydb = new DBAdapter(getApplicationContext()).open();
-
-            ContentValues values = new ContentValues();
-            //_id, person, property, period_date, from is_lending
-            values.put("person", "test");
-            values.put("property", "test");
-            values.put("period_date", "2014-11-10");
-            values.put("from_date", "2014-9-4");
-            values.put("is_lending", "-1");
-            //Insert発行
-            mydb.insert(table_name, null, values);
-
-            values = new ContentValues();
-            //_id, person, property, period_date, from is_lending
-            values.put("person", "test");
-            values.put("property", "test");
-            values.put("period_date", "2014-11-10");
-            values.put("from_date", "2014-9-4");
-            values.put("is_lending", "1");
-            //Insert発行
-            mydb.insert(table_name, null, values);
-
-            mydb.close();
+        if(v==leftBtn){
+            cal.set(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH) - 1, cal.get(Calendar.DAY_OF_MONTH));
+            td.setText(cal.get(Calendar.YEAR)+"年"+(cal.get(Calendar.MONTH)+1)+"月");
+            Resources res = getResources();
+            for(int i=0;i<=41;i++){
+                String resViewName = "tv" + i;
+                int viewId = res.getIdentifier(resViewName, "id", getPackageName());
+                tvCal = (TextView)findViewById(viewId);
+                tvCal.setOnClickListener(this);
+            }
+            writeCalendarDate(cal);
+        }else if(v == rightBtn){
+            cal.set(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH) + 1, cal.get(Calendar.DAY_OF_MONTH));
+            td.setText(cal.get(Calendar.YEAR)+"年"+(cal.get(Calendar.MONTH)+1)+"月");
+            Resources res = getResources();
+            for(int i=0;i<=41;i++){
+                String resViewName = "tv" + i;
+                int viewId = res.getIdentifier(resViewName, "id", getPackageName());
+                tvCal = (TextView)findViewById(viewId);
+                tvCal.setOnClickListener(this);
+            }
+            writeCalendarDate(cal);
+        }
+        else if (v==btn1){
+            Intent intent = new Intent(this, EnterDataActivity.class);
+            startActivityForResult(intent, 0);
         }
         else if (v==btn2) {
             Intent intent = new Intent(this, ListPageActivity.class);
@@ -136,7 +143,7 @@ public class MyActivity extends Activity implements OnClickListener{
                 int viewId = res.getIdentifier(resViewName, "id", getPackageName());
                 tvCal = (TextView)findViewById(viewId);
                 if(v==tvCal){
-                    String date = tvCal.getText().toString();
+                  /*  String date = tvCal.getText().toString();
                     textDialog = "";
                     textDialog += date;
                     tvCal.setText(textDialog);
@@ -159,7 +166,10 @@ public class MyActivity extends Activity implements OnClickListener{
                                         }
                                     })
                             .show();
-                    break;
+                    break;*/
+                    Intent intent = new Intent(this, EnterDataActivity.class);
+                    intent.putExtra("date",tvCal.getText().toString());
+                    startActivityForResult(intent, 0);
                 }
             }
         }
